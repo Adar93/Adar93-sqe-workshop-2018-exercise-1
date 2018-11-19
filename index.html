@@ -2,7 +2,6 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-
         <style>
             table {
                 width: 100%;
@@ -41,8 +40,17 @@
                     </div>
                 </td>
                 <td>
-                    <div class="textAreaWrapper">
-                        <textarea id="parsedCode" title="Parse code"></textarea>
+                    <div>
+                        <table id="parsedCode" border=1>
+                            <tr>
+                                <th>Line</th>
+                                <th>Type</th>
+                                <th>Name</th>
+                                <th>Condition</th>
+                                <th>Value</th>
+                            </tr>
+                            <tbody id = "tableBody"></tbody>
+                        </table>
                     </div>
                 </td>
             </tr>
