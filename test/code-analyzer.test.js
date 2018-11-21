@@ -70,7 +70,14 @@ describe('For parser', () => {
                 'x = x + 1;\n' +
                 'y = y / 2;\n' +
                 '}')),
-            '[{"Line":1,"Type":"VariableDeclarator","Name":"i","Cond":null,"Val":null},{"Line":1,"Type":"VariableDeclarator","Name":"x","Cond":null,"Val":"10"},{"Line":1,"Type":"VariableDeclarator","Name":"y","Cond":null,"Val":"100"},{"Line":2,"Type":"ForStatement","Name":null,"Cond":"i=0 ; i < 5 ; i++","Val":null},{"Line":3,"Type":"AssignmentExpression","Name":"x","Cond":null,"Val":"x + 1"},{"Line":4,"Type":"AssignmentExpression","Name":"y","Cond":null,"Val":"y / 2"}]'
+            '[{"Line":1,"Type":"VariableDeclarator","Name":"i","Cond":null,"Val":null},{"Line":1,"Type":"VariableDeclarator","Name":"x","Cond":null,"Val":"10"},{"Line":1,"Type":"VariableDeclarator","Name":"y","Cond":null,"Val":"100"},{"Line":2,"Type":"ForStatement","Name":null,"Cond":"i = 0 ; i < 5 ; i++","Val":null},{"Line":3,"Type":"AssignmentExpression","Name":"x","Cond":null,"Val":"x + 1"},{"Line":4,"Type":"AssignmentExpression","Name":"y","Cond":null,"Val":"y / 2"}]'
+        );
+    });
+    it('is parsing a for loop with let correctly', () => {
+        assert.deepEqual(
+            JSON.stringify(tableCreation('for (let i=0;i<5;i++) {\n' +
+                '}')),
+            '[{"Line":1,"Type":"ForStatement","Name":null,"Cond":"let i = 0 ; i < 5 ; i++","Val":null}]'
         );
     });
 });
@@ -106,7 +113,7 @@ describe('Return parser', () => {
             JSON.stringify(tableCreation('function a(){\n' +
                 '    return -1;\n' +
                 '}')),
-            '[{"Line":1,"Type":"FunctionDeclaration","Name":"a","Cond":null,"Val":null},{"Line":2,"Type":"ReturnStatement","Name":null,"Cond":null,"Val":"1-"}]'
+            '[{"Line":1,"Type":"FunctionDeclaration","Name":"a","Cond":null,"Val":null},{"Line":2,"Type":"ReturnStatement","Name":null,"Cond":null,"Val":"-1"}]'
         );
     });
 });
@@ -127,7 +134,7 @@ describe('The table parser', () => {
                 '        else\n' +
                 '            return mid;}\n' +
                 '    return -1;}')),
-            '[{"Line":1,"Type":"FunctionDeclaration","Name":"binarySearch","Cond":null,"Val":null},{"Line":1,"Type":"Param","Name":"X","Cond":null,"Val":null},{"Line":1,"Type":"Param","Name":"V","Cond":null,"Val":null},{"Line":1,"Type":"Param","Name":"n","Cond":null,"Val":null},{"Line":2,"Type":"VariableDeclarator","Name":"low","Cond":null,"Val":null},{"Line":2,"Type":"VariableDeclarator","Name":"high","Cond":null,"Val":null},{"Line":2,"Type":"VariableDeclarator","Name":"mid","Cond":null,"Val":null},{"Line":3,"Type":"AssignmentExpression","Name":"low","Cond":null,"Val":"0"},{"Line":4,"Type":"AssignmentExpression","Name":"high","Cond":null,"Val":"n - 1"},{"Line":5,"Type":"WhileStatement","Name":null,"Cond":"low <= high","Val":null},{"Line":6,"Type":"AssignmentExpression","Name":"mid","Cond":null,"Val":"low + high / 2"},{"Line":7,"Type":"IfStatement","Name":null,"Cond":"X < V[mid]","Val":null},{"Line":8,"Type":"AssignmentExpression","Name":"high","Cond":null,"Val":"mid - 1"},{"Line":9,"Type":"IfStatement","Name":null,"Cond":"X > V[mid]","Val":null},{"Line":10,"Type":"AssignmentExpression","Name":"low","Cond":null,"Val":"mid + 1"},{"Line":12,"Type":"ReturnStatement","Name":null,"Cond":null,"Val":"mid"},{"Line":13,"Type":"ReturnStatement","Name":null,"Cond":null,"Val":"1-"}]'
+            '[{"Line":1,"Type":"FunctionDeclaration","Name":"binarySearch","Cond":null,"Val":null},{"Line":1,"Type":"Param","Name":"X","Cond":null,"Val":null},{"Line":1,"Type":"Param","Name":"V","Cond":null,"Val":null},{"Line":1,"Type":"Param","Name":"n","Cond":null,"Val":null},{"Line":2,"Type":"VariableDeclarator","Name":"low","Cond":null,"Val":null},{"Line":2,"Type":"VariableDeclarator","Name":"high","Cond":null,"Val":null},{"Line":2,"Type":"VariableDeclarator","Name":"mid","Cond":null,"Val":null},{"Line":3,"Type":"AssignmentExpression","Name":"low","Cond":null,"Val":"0"},{"Line":4,"Type":"AssignmentExpression","Name":"high","Cond":null,"Val":"n - 1"},{"Line":5,"Type":"WhileStatement","Name":null,"Cond":"low <= high","Val":null},{"Line":6,"Type":"AssignmentExpression","Name":"mid","Cond":null,"Val":"(low + high) / 2"},{"Line":7,"Type":"IfStatement","Name":null,"Cond":"X < V[mid]","Val":null},{"Line":8,"Type":"AssignmentExpression","Name":"high","Cond":null,"Val":"mid - 1"},{"Line":9,"Type":"IfStatement","Name":null,"Cond":"X > V[mid]","Val":null},{"Line":10,"Type":"AssignmentExpression","Name":"low","Cond":null,"Val":"mid + 1"},{"Line":12,"Type":"ReturnStatement","Name":null,"Cond":null,"Val":"mid"},{"Line":13,"Type":"ReturnStatement","Name":null,"Cond":null,"Val":"-1"}]'
         );
     });
 });

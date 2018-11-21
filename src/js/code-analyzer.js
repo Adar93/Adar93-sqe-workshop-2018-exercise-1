@@ -1,4 +1,5 @@
 import * as esprima from 'esprima';
+import * as escodegen from 'escodegen';
 
 const parseCode = (codeToParse) => {
     return esprima.parseScript(codeToParse,{loc:true});
@@ -26,49 +27,6 @@ const Functions = {
     'BlockStatement': loopBody,
     'ForStatement' : parseFor
 };
-//Could be together, only logical separation.
-const Expressions = {
-    'Identifier' : parseIdentifier,
-    'Literal' : parseLiteral,
-    'BinaryExpression' : parseBinExpr,
-    'LogicalExpression' : parseBinExpr,
-    'UnaryExpression' : parseUnary,
-    'MemberExpression' : parseMember,
-    'UpdateExpression' : parseUnary
-};
-
-function parseIdentifier(Exp){
-    return Exp.name;
-}
-
-function parseLiteral(Exp){
-    return Exp.value.toString();
-}
-
-function parseBinExpr(Exp){
-    let val, left, op, right;
-    left = Expressions[Exp.left.type](Exp.left);
-    right = Expressions[Exp.right.type](Exp.right);
-    op = ' ' + Exp.operator + ' ';
-    val = left + op + right;
-    return val;
-}
-
-function parseUnary(Exp){
-    let op, val;
-    op = Exp.operator;
-    val = Expressions[Exp.argument.type](Exp.argument);
-    return val + op;
-}
-
-function parseMember(Exp) {
-    let arr, i, val;
-    arr = Expressions[Exp.object.type](Exp.object);
-    i = Expressions[Exp.property.type](Exp.property);
-    val = arr + '[' + i + ']';
-    return val;
-}
-
 
 function parseExp(Body){
     return Functions[Body.expression.type](Body.expression);
@@ -77,8 +35,8 @@ function parseExp(Body){
 function parseAssign(Body){
     let Table = [];
     let type = Body.type;
-    let name = Expressions[Body.left.type](Body.left);
-    let val = Expressions[Body.right.type](Body.right);
+    let name = escodegen.generate(Body.left);
+    let val = escodegen.generate(Body.right);
     let line = Body.loc.start.line;
     let row = new TableRow(line, type, name ,null ,val );
     Table.push(row);
@@ -94,7 +52,7 @@ function parseLet(Body){
         let line = Body.declarations[i].loc.start.line;
         let val = null;
         if (Body.declarations[i].init != null)
-            val = Expressions[Body.declarations[i].init.type](Body.declarations[i].init);
+            val = escodegen.generate(Body.declarations[i].init);
         let row = new TableRow(line, type, name, null, val);
         Table.push(row);
     }
@@ -104,7 +62,7 @@ function parseLet(Body){
 function parseIf(Body){
     let Table = [];
     let type = Body.type;
-    let cond = Expressions[Body.test.type](Body.test);
+    let cond = escodegen.generate(Body.test);
     let line = Body.loc.start.line;
     let row = new TableRow(line, type, null, cond , null );
     Table.push(row);
@@ -139,7 +97,7 @@ function parseFunc(Body){
 function parseWhile(Body){
     let Table = [];
     let type = Body.type;
-    let cond = Expressions[Body.test.type](Body.test);
+    let cond = escodegen.generate(Body.test);
     let line = Body.loc.start.line;
     let row = new TableRow(line, type, null, cond, null);
     Table.push(row);
@@ -151,11 +109,12 @@ function parseFor(Body){
     let Table = [];
     let line = Body.loc.start.line;
     let type = Body.type;
-
-    let initRow = Functions[Body.init.type](Body.init);
-    let init = initRow[0].Name + '=' + initRow[0].Val;
-    let test = Expressions[Body.test.type](Body.test);
-    let update = Expressions[Body.update.type](Body.update);
+    let init = escodegen.generate(Body.init);
+    if(init.substr(init.length - 1) === ';'){
+        init = init.substr(0,init.length - 1);
+    }
+    let test = escodegen.generate(Body.test);
+    let update = escodegen.generate(Body.update);
     let cond = init + ' ; ' + test + ' ; ' + update;
     let row = new TableRow(line, type, null, cond, null);
     Table.push(row);
@@ -167,7 +126,7 @@ function parseFor(Body){
 function parseRet(Body){
     let Table = [];
     let type = Body.type;
-    let val = Expressions[Body.argument.type](Body.argument);
+    let val = escodegen.generate(Body.argument);
     let line = Body.loc.start.line;
     let row = new TableRow(line, type, null, null, val);
     Table.push(row);
